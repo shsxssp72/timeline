@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softwareTest.timeline.Mapper.UserInfoMapper">
+	<resultMap id="BaseResultMap" type="com.softwareTest.timeline.Entity.UserInfo">
+		<constructor>
+			<idArg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+			<arg column="username" javaType="java.lang.String" jdbcType="VARCHAR"/>
+			<arg column="display_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+			<arg column="user_password" javaType="java.lang.String" jdbcType="CHAR"/>
+			<arg column="salt" javaType="java.lang.String" jdbcType="CHAR"/>
+			<arg column="last_login" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+		</constructor>
+	</resultMap>
+	<sql id="Base_Column_List">
+		user_id
+		,
+		username,
+		display_name,
+		user_password,
+		salt,
+		last_login
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from UserInfo
+		where user_id = #{userId,jdbcType=INTEGER}
+	</select>
+	<select id="selectByParams" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		SELECT
+		<include refid="Base_Column_List"/>
+		FROM UserInfo
+		<where>
+			1=1
+			<if test="user_id!=null">
+				AND user_id = #{user_id,jdbcType=INTEGER}
+			</if>
+			<if test="username!=null and username!=''">
+				AND username like CONCAT(CONCAT('%',#{username,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="display_name!=null and display_name!=''">
+				AND display_name like CONCAT(CONCAT('%',#{display_name,jdbcType=VARCHAR},'%')
+			</if>
+			<if test="user_password!=null and user_password!=''">
+				AND user_password = #{user_password,jdbcType=CHAR}
+			</if>
+			<if test="salt!=null and salt!=''">
+				AND salt = #{salt,jdbcType=CHAR}
+			</if>
+			<if test="last_login!=null">
+				AND last_login = #{last_login,jdbcType=TIMESTAMP}
+			</if>
+		</where>
+	</select>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		DELETE
+		FROM UserInfo
+		WHERE user_id = #{userId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.softwareTest.timeline.Entity.UserInfo">
+		INSERT INTO UserInfo (user_id, username, display_name,
+							  user_password, salt, last_login)
+		VALUES (#{userId,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{displayName,jdbcType=VARCHAR},
+				#{userPassword,jdbcType=CHAR}, #{salt,jdbcType=CHAR}, #{lastLogin,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.softwareTest.timeline.Entity.UserInfo">
+		insert into UserInfo
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="displayName != null">
+				display_name,
+			</if>
+			<if test="userPassword != null">
+				user_password,
+			</if>
+			<if test="salt != null">
+				salt,
+			</if>
+			<if test="lastLogin != null">
+				last_login,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="displayName != null">
+				#{displayName,jdbcType=VARCHAR},
+			</if>
+			<if test="userPassword != null">
+				#{userPassword,jdbcType=CHAR},
+			</if>
+			<if test="salt != null">
+				#{salt,jdbcType=CHAR},
+			</if>
+			<if test="lastLogin != null">
+				#{lastLogin,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.softwareTest.timeline.Entity.UserInfo">
+		update UserInfo
+		<set>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="displayName != null">
+				display_name = #{displayName,jdbcType=VARCHAR},
+			</if>
+			<if test="userPassword != null">
+				user_password = #{userPassword,jdbcType=CHAR},
+			</if>
+			<if test="salt != null">
+				salt = #{salt,jdbcType=CHAR},
+			</if>
+			<if test="lastLogin != null">
+				last_login = #{lastLogin,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where user_id = #{userId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.softwareTest.timeline.Entity.UserInfo">
+		UPDATE UserInfo
+		SET username      = #{username,jdbcType=VARCHAR},
+			display_name  = #{displayName,jdbcType=VARCHAR},
+			user_password = #{userPassword,jdbcType=CHAR},
+			salt          = #{salt,jdbcType=CHAR},
+			last_login    = #{lastLogin,jdbcType=TIMESTAMP}
+		WHERE user_id = #{userId,jdbcType=INTEGER}
+	</update>
+	<select id="getAvailableUserId" resultType="java.lang.Integer">
+		SELECT max(user_id)
+		FROM (SELECT user_id
+			  FROM UserInfo) AS A
+	</select>
+</mapper>

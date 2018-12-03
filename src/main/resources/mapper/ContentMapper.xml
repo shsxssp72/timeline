@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softwareTest.timeline.Mapper.ContentMapper">
+	<resultMap id="BaseResultMap" type="com.softwareTest.timeline.Entity.Content">
+		<constructor>
+			<idArg column="content_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+			<arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+			<arg column="publish_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+		</constructor>
+	</resultMap>
+	<resultMap id="ResultMapWithBLOBs" type="com.softwareTest.timeline.Entity.Content">
+		<constructor>
+			<idArg column="content_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+			<arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+			<arg column="publish_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+			<arg column="content" javaType="java.lang.String" jdbcType="LONGVARCHAR"/>
+		</constructor>
+	</resultMap>
+	<sql id="Base_Column_List">
+		content_id,
+		user_id,
+		publish_time
+	</sql>
+	<sql id="Blob_Column_List">
+		content
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List"/>
+		,
+		<include refid="Blob_Column_List"/>
+		from Content
+		where content_id = #{contentId,jdbcType=INTEGER}
+	</select>
+	<select id="selectByParams" resultMap="ResultMapWithBLOBs" parameterType="java.util.HashMap">
+		SELECT
+		<include refid="Base_Column_List"/>
+		,
+		<include refid="Blob_Column_List"/>
+		FROM Content
+		<where>
+			1=1
+			<if test="content_id!=null">
+				AND content_id = #{content_id,jdbcType=INTEGER}
+			</if>
+			<if test="user_id!=null">
+				AND user_id = #{user_id,jdbcType=INTEGER}
+			</if>
+			<if test="publish_time!=null">
+				AND publish_time = #{publish_time,jdbcType=TIMESTAMP}
+			</if>
+			<if test="content!=null and content!=''">
+				AND content like CONCAT(CONCAT('%',#{content,jdbcType=LONGVARCHAR},'%')
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		DELETE
+		FROM Content
+		WHERE content_id = #{contentId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.softwareTest.timeline.Entity.Content">
+		INSERT INTO Content (content_id, user_id, publish_time,
+							 content)
+		VALUES (#{contentId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{publishTime,jdbcType=TIMESTAMP},
+				#{content,jdbcType=LONGVARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.softwareTest.timeline.Entity.Content">
+		insert into Content
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="contentId != null">
+				content_id,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="publishTime != null">
+				publish_time,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="contentId != null">
+				#{contentId,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="publishTime != null">
+				#{publishTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.softwareTest.timeline.Entity.Content">
+		update Content
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="publishTime != null">
+				publish_time = #{publishTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="content != null">
+				content = #{content,jdbcType=LONGVARCHAR},
+			</if>
+		</set>
+		where content_id = #{contentId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.softwareTest.timeline.Entity.Content">
+		UPDATE Content
+		SET user_id      = #{userId,jdbcType=INTEGER},
+			publish_time = #{publishTime,jdbcType=TIMESTAMP},
+			content      = #{content,jdbcType=LONGVARCHAR}
+		WHERE content_id = #{contentId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.softwareTest.timeline.Entity.Content">
+		UPDATE Content
+		SET user_id      = #{userId,jdbcType=INTEGER},
+			publish_time = #{publishTime,jdbcType=TIMESTAMP}
+		WHERE content_id = #{contentId,jdbcType=INTEGER}
+	</update>
+	<select id="getAvailableContentId" resultType="java.lang.Integer">
+		SELECT max(content_id)
+		FROM (SELECT content_id
+			  FROM Content) AS A
+	</select>
+	<select id="selectByTimeRange" resultMap="ResultMapWithBLOBs" parameterType="java.sql.Date">
+		SELECT *
+		FROM Content
+		WHERE publish_time <![CDATA[ >= ]]> #{start,jdbcType=TIMESTAMP} AND publish_time <![CDATA[ <= ]]> #{end,jdbcType=TIMESTAMP}
+	</select>
+</mapper>
