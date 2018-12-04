@@ -1,12 +1,13 @@
-package com.softwareTest.timeline.Utility;
+package com.softwareTest.timeline.Bean;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @ApiModel
-public class QueryEntity
+public class QueryEntity implements Serializable
 {
 	@ApiModelProperty("用户ID")
 	private Integer user_id;
