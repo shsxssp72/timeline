@@ -3,17 +3,14 @@ package com.softwareTest.timeline.Utility;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.Sha2Crypt;
-import org.apache.shiro.crypto.AesCipherService;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.*;
@@ -22,7 +19,9 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Date;
 
+import static org.apache.commons.codec.binary.Base64.decodeBase64;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 
 public class CryptoUtility
@@ -44,30 +43,63 @@ public class CryptoUtility
 		return Sha2Crypt.sha512Crypt((input+salt).getBytes());
 	}
 
-	public static Key generateAESKey()
+	public static String generateAESKey()
 	{
-		AesCipherService aesCipherService=new AesCipherService();
-		aesCipherService.setKeySize(256);
-		return aesCipherService.generateNewKey();
+		String seed=new Date().toString();
+		try
+		{
+			SecureRandom secureRandom=SecureRandom.getInstance("SHA1PRNG");
+			secureRandom.setSeed(seed.getBytes());
+			KeyGenerator generator=KeyGenerator.getInstance("AES");
+			generator.init(256,secureRandom);
+			return encodeBase64String(generator.generateKey().getEncoded());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	public static String AESEncrypt(String input,Key key)
+
+	public static String AESEncrypt(String input,String key)
 	{
-		if(key==null)
-			return null;
-		AesCipherService aesCipherService=new AesCipherService();
-		aesCipherService.setKeySize(256);
-		return aesCipherService.encrypt(input.getBytes(),key.getEncoded()).toBase64();
+		try
+		{
+			byte[] inBytes=decodeBase64(input);
+			byte[] keyBytes=decodeBase64(key);
+			SecretKeySpec skeySpec=new SecretKeySpec(keyBytes,"AES");
+			Cipher cipher=Cipher.getInstance("AES/ECB/PKCS5Padding");// "算法/模式/补码方式"
+			cipher.init(Cipher.ENCRYPT_MODE,skeySpec);
+			byte[] encrypted=cipher.doFinal(inBytes);
+			return encodeBase64String(encrypted);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	public static String AESDecrypt(String input,Key key)
+	public static String AESDecrypt(String input,String key)
 	{
-		if(key==null)
-			return null;
-		AesCipherService aesCipherService=new AesCipherService();
-		aesCipherService.setKeySize(256);
-		return new String(aesCipherService.decrypt(Base64.decodeBase64(input),key.getEncoded()).getBytes());
+		try
+		{
+			byte[] inBytes=decodeBase64(input);
+			byte[] keyBytes=decodeBase64(key);
+			SecretKeySpec skeySpec=new SecretKeySpec(keyBytes,"AES");
+			Cipher cipher=Cipher.getInstance("AES/ECB/PKCS5Padding");// "算法/模式/补码方式"
+			cipher.init(Cipher.DECRYPT_MODE,skeySpec);
+			byte[] encrypted=cipher.doFinal(inBytes);
+			return encodeBase64String(encrypted);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
+
 
 	public static String getRandomString(int length)
 	{
@@ -119,7 +151,7 @@ public class CryptoUtility
 	{
 		try
 		{
-//			Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+			Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 			Cipher cipher=Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
 //					("RSA/ECB/PKCS1Padding");
 			cipher.init(Cipher.ENCRYPT_MODE,publicKey);
@@ -149,6 +181,16 @@ public class CryptoUtility
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static String publicKeyToString(PublicKey publicKey)
+	{
+		return org.apache.commons.codec.binary.Base64.encodeBase64String(publicKey.getEncoded());
+	}
+
+	public static String privateKeyToString(PrivateKey privateKey)
+	{
+		return org.apache.commons.codec.binary.Base64.encodeBase64String(privateKey.getEncoded());
 	}
 
 	public static PublicKey getPublicKeyFromString(String input)
@@ -182,6 +224,11 @@ public class CryptoUtility
 		}
 		return null;
 	}
+//	Deprecated
+//	public static SecretKeySpec getAESKeyFromString(String input)
+//	{
+//		return new SecretKeySpec(input.getBytes(),"AES");
+//	}
 
 	public static String getPKCS1PublicKey(RSAPublicKey publicKey)
 	{
@@ -211,6 +258,64 @@ public class CryptoUtility
 		Object salt_real=username+salt;
 		Object result=new SimpleHash(alg,password,salt_real,iterateTime);
 		return result.toString();
+	}
+
+	/**
+	 * 将普通字符串用16进制描述
+	 * 如"WAZX-B55SY6-S6DT5" 描述为："57415a582d4235355359362d5336445435"
+	 */
+	public static String strToHex(String str)
+	{
+		byte[] bytes=str.getBytes();
+		return bytesToHex(bytes);
+	}
+
+	/**
+	 * 将16进制描述的字符串还原为普通字符串
+	 * 如"57415a582d4235355359362d5336445435" 还原为："WAZX-B55SY6-S6DT5"
+	 */
+	public static String hexToStr(String hex)
+	{
+		byte[] bytes=hexToBytes(hex);
+		return new String(bytes);
+	}
+
+
+	/**
+	 * 16进制转byte[]
+	 */
+	public static byte[] hexToBytes(String hex)
+	{
+		int length=hex.length()/2;
+		byte[] bytes=new byte[length];
+		for(int i=0;i<length;i++)
+		{
+			String tempStr=hex.substring(2*i,2*i+2);//byte:8bit=4bit+4bit=十六进制位+十六进制位
+			bytes[i]=(byte)Integer.parseInt(tempStr,16);
+		}
+		return bytes;
+	}
+
+	/**
+	 * byte[]转16进制
+	 */
+	public static String bytesToHex(byte[] bytes)
+	{
+		StringBuilder sb=new StringBuilder();
+		for(int i=0;i<bytes.length;i++)
+		{
+			int tempI=bytes[i]&0xFF;//byte:8bit,int:32bit;高位相与.
+			String str=Integer.toHexString(tempI);
+			if(str.length()<2)
+			{
+				sb.append(0).append(str);//长度不足两位，补齐：如16进制的d,用0d表示。
+			}
+			else
+			{
+				sb.append(str);
+			}
+		}
+		return sb.toString();
 	}
 
 }

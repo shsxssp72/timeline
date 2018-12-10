@@ -57,7 +57,7 @@ public class Documentation
 	@Test
 	public void Test() throws Exception
 	{
-//		mockMvc.perform(get("/testPath/get").accept(MediaType.APPLICATION_JSON))
+//		mockMvc.perform(getByKey("/testPath/getByKey").accept(MediaType.APPLICATION_JSON))
 ////				.andDo(SwaggerResultHandler.outputDirectory(outputDir).build())
 //				.andDo(document("home"))
 //				.andExpect(status().isOk())

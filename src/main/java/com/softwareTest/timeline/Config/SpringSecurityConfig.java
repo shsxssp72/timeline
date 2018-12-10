@@ -1,13 +1,16 @@
 package com.softwareTest.timeline.Config;
 
+import com.softwareTest.timeline.Config.SpringSecurity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -39,6 +42,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 	@Autowired
 	JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
+	@Autowired
+	CryptoFilter cryptoFilter;
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception
 	{
@@ -49,35 +55,34 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 	@Override
 	protected void configure(HttpSecurity http) throws Exception
 	{
-		http
-				.csrf()
-				.disable()
-				.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and()
-				.httpBasic()
-				.authenticationEntryPoint(authenticationEntryPoint)
-				.and()
-				.authorizeRequests()
-				.anyRequest()
-//				.access("@rbacauthorityservice.hasPermission(httpServletRequest,authentication)")
-				.authenticated()
-				.and()
-				.formLogin()
+		http.csrf()
+				.disable();
+		http.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.httpBasic()
+				.authenticationEntryPoint(authenticationEntryPoint);
+		http.authorizeRequests()
+//				.anyRequest()
+//				.authenticated();
+				.antMatchers("/login/**").permitAll()
+				.antMatchers("/regKey**").permitAll()
+				//TODO 在正式环境中删除
+				.antMatchers("/testPath/**").permitAll()
+				.antMatchers("/api/**").access("hasRole('ROLE_USER')");//TODO 确定权限
+//				.antMatchers("/**").denyAll();
+		http.formLogin()
 				.loginPage("/login")
 				.successHandler(authenticationSuccessHandler)
 				.failureHandler(authenticationFailureHandler)
-				.permitAll()
-				.and()
-				.logout()
+				.permitAll();
+		http.logout()
 				.logoutUrl("/logout")
 				.logoutSuccessHandler(logoutSuccessHandler)
-				.permitAll()
-				.and()
-				.antMatcher("/**")
-				.authorizeRequests()
-				.and()
-				.cors();
+				.permitAll();
+		http.antMatcher("/**")
+				.authorizeRequests();
+		http.cors();
+
 
 		http.rememberMe().rememberMeParameter("remember-me")
 				.userDetailsService(customUserDetailsService).tokenValiditySeconds(Constants.TOKEN_EXPIRATION_SECONDS);
@@ -85,12 +90,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
 		http.addFilterBefore(jwtAuthenticationTokenFilter,UsernamePasswordAuthenticationFilter.class); // JWT Filter
 		http.addFilterAt(customAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(cryptoFilter,ChannelProcessingFilter.class);
 	}
 
-	@Bean//此处名字必须一样
-	CustomAuthenticationFilter customAuthenticationFilter() throws Exception
+//	@Override
+//	public void configure(WebSecurity web) throws Exception
+//	{
+//		web.ignoring().antMatchers("/login/**");
+//	}
+
+	@Bean
+//此处名字必须一样
+	JsonCustomAuthenticationFilter customAuthenticationFilter() throws Exception
 	{
-		CustomAuthenticationFilter filter=new CustomAuthenticationFilter();
+		JsonCustomAuthenticationFilter filter=new JsonCustomAuthenticationFilter();
 		filter.setAuthenticationSuccessHandler(new AjaxAuthenticationSuccessHandler());
 		filter.setAuthenticationFailureHandler(new AjaxAuthenticationFailureHandler());
 		filter.setFilterProcessesUrl("/login");
@@ -102,7 +115,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 
 	@Override
 	@Bean // share AuthenticationManager for web and oauth
-	public AuthenticationManager authenticationManagerBean() throws Exception {
+	public AuthenticationManager authenticationManagerBean() throws Exception
+	{
 		return super.authenticationManagerBean();
 	}
 

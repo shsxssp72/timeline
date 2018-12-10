@@ -1,4 +1,4 @@
-package com.softwareTest.timeline.Config;
+package com.softwareTest.timeline.Config.SpringSecurity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

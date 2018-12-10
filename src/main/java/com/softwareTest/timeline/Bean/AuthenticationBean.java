@@ -1,6 +1,8 @@
-package com.softwareTest.timeline.Config;
+package com.softwareTest.timeline.Bean;
 
-public class AuthenticationBean
+import java.io.Serializable;
+
+public class AuthenticationBean implements Serializable
 {
 	private String username;
 	private String password;

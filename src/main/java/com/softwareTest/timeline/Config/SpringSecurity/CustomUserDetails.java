@@ -1,4 +1,4 @@
-package com.softwareTest.timeline.Config;
+package com.softwareTest.timeline.Config.SpringSecurity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

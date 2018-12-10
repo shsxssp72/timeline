@@ -1,7 +1,8 @@
-package com.softwareTest.timeline.Config;
+package com.softwareTest.timeline.Config.SpringSecurity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softwareTest.timeline.Bean.AjaxResponseBody;
+import com.softwareTest.timeline.Config.Constants;
 import com.softwareTest.timeline.Utility.CryptoUtility;
 import com.softwareTest.timeline.Utility.JwtTokenUtil;
 import org.slf4j.Logger;
@@ -31,7 +32,6 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
 		responseBody.setStatus(Constants.LoginSuccessStatus);
 		responseBody.setMsg(Constants.LoginSuccessMessage);
 //		CustomUserDetails userDetails=(CustomUserDetails)(authentication.getPrincipal());
-		System.out.println("onAuthenticationSuccess: "+authentication+"/\n	"+authentication.getCredentials());
 		logger.info("Username: "+(String)authentication.getPrincipal());
 		logger.info("Password: "+(String)authentication.getCredentials());
 		String jwtToken=JwtTokenUtil.generateToken((String)authentication.getPrincipal(),Constants.TOKEN_EXPIRATION_SECONDS,/*Unused*/Constants.TOKEN_SALT);

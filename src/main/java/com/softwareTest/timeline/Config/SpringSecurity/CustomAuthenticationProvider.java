@@ -1,6 +1,7 @@
-package com.softwareTest.timeline.Config;
+package com.softwareTest.timeline.Config.SpringSecurity;
 
-import com.softwareTest.timeline.Utility.CryptoUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,12 +15,15 @@ import org.springframework.stereotype.Component;
 public class CustomAuthenticationProvider implements AuthenticationProvider
 {
 
+	private final static Logger logger=LoggerFactory.getLogger(CustomAuthenticationProvider.class);
+
 	@Autowired
 	CustomUserDetailsService userDetailsService;
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException
 	{
+		logger.info("Entering CustomAuthenticationProvider.");
 		String userName = (String) authentication.getPrincipal();
 		String password = (String) authentication.getCredentials();
 
@@ -27,7 +31,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider
 		//TODO 可在此处进行解密
 //		String hashedPassword=CryptoUtility.getHashedPassword(password,userName,"",1);
 		String hashedPassword=password;
-		System.out.println("authenticate: "+authentication+"/\n	"+authentication.getCredentials());
 		UserDetails userDetails=userDetailsService.loadUserByUsername(userName);
 
 		if(!userDetails.getPassword().equals(hashedPassword))

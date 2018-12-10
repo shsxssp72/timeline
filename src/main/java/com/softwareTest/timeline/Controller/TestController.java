@@ -2,6 +2,7 @@ package com.softwareTest.timeline.Controller;
 
 
 import com.softwareTest.timeline.Entity.Content;
+import com.softwareTest.timeline.Utility.RedisUtility;
 import com.softwareTest.timeline.Mapper.ContentMapper;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,6 +22,8 @@ public class TestController
 	@Autowired
 	ContentMapper contentMapper;
 
+	@Autowired
+	RedisUtility redisUtility;
 
 	@ApiOperation(value="获得信息")
 	@ApiImplicitParams({
@@ -34,10 +37,13 @@ public class TestController
 		Map<String,Object> toSelect=new HashMap<>();
 		toSelect.put("content_id",1);
 		Content content=contentMapper.selectByParams(toSelect).get(0);
+		redisUtility.setToHash("content","1",content.getContent());
 		map.put("user_id",content.getUserId().toString());
 		map.put("content_id",content.getContentId().toString());
 		map.put("publish_time",content.getPublishTime());
 		map.put("content",content.getContent());
+		System.out.println(redisUtility.getFromHashByKey("content","1"));
+		redisUtility.removeFromHash("content","1");
 		return map;
 	}
 

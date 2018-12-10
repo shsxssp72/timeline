@@ -1,7 +1,6 @@
-package com.softwareTest.timeline.Config;
+package com.softwareTest.timeline.Config.SpringSecurity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softwareTest.timeline.Bean.AjaxResponseBody;
+import com.softwareTest.timeline.Config.Constants;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
