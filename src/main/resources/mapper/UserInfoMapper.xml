@@ -36,10 +36,10 @@
 				AND user_id = #{user_id,jdbcType=INTEGER}
 			</if>
 			<if test="username!=null and username!=''">
-				AND username like CONCAT(CONCAT('%',#{username,jdbcType=VARCHAR},'%')
+				AND username = #{username,jdbcType=VARCHAR}
 			</if>
 			<if test="display_name!=null and display_name!=''">
-				AND display_name like CONCAT(CONCAT('%',#{display_name,jdbcType=VARCHAR},'%')
+				AND display_name = #{display_name,jdbcType=VARCHAR}
 			</if>
 			<if test="user_password!=null and user_password!=''">
 				AND user_password = #{user_password,jdbcType=CHAR}

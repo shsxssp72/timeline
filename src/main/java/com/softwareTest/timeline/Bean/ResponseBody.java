@@ -3,7 +3,7 @@ package com.softwareTest.timeline.Bean;
 import java.io.Serializable;
 
 
-public class AjaxResponseBody implements Serializable
+public class ResponseBody implements Serializable
 {
 
 	private String status;
@@ -11,7 +11,7 @@ public class AjaxResponseBody implements Serializable
 	private Object result;
 	private String jwtToken;
 
-	public AjaxResponseBody()
+	public ResponseBody()
 	{
 	}
 

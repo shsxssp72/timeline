@@ -42,9 +42,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 	@Autowired
 	JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
-	@Autowired
-	CryptoFilter cryptoFilter;
-
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception
 	{
@@ -65,7 +62,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 //				.anyRequest()
 //				.authenticated();
 				.antMatchers("/login/**").permitAll()
-				.antMatchers("/regKey**").permitAll()
+				.antMatchers("/register**").permitAll()
 				//TODO 在正式环境中删除
 				.antMatchers("/testPath/**").permitAll()
 				.antMatchers("/api/**").access("hasRole('ROLE_USER')");//TODO 确定权限
@@ -90,7 +87,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
 		http.addFilterBefore(jwtAuthenticationTokenFilter,UsernamePasswordAuthenticationFilter.class); // JWT Filter
 		http.addFilterAt(customAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
-		http.addFilterBefore(cryptoFilter,ChannelProcessingFilter.class);
 	}
 
 //	@Override

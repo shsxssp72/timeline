@@ -1,10 +1,10 @@
 package com.softwareTest.timeline.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.softwareTest.timeline.Bean.QueryBean;
 import com.softwareTest.timeline.Entity.Content;
 import com.softwareTest.timeline.Service.ContentService;
 import com.softwareTest.timeline.Utility.JsonVisibilityLevel;
-import com.softwareTest.timeline.Bean.QueryEntity;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -43,7 +43,8 @@ public class ContentApiController
 	{
 		if(errors.hasErrors())
 		{
-			errors.getAllErrors().stream().forEach(error->logger.error(error.getDefaultMessage()));
+			errors.getAllErrors().stream()
+					.forEach(error->logger.error(error.getDefaultMessage()));
 		}
 		contentService.createNewContent(content);
 		Map<String,Object> resultMap=new HashMap<>();
@@ -75,18 +76,23 @@ public class ContentApiController
 	}
 
 	@ApiOperation(value="在两个时间点之间的范围内查询content", notes="仅需要提供start和end")
-	@ApiImplicitParam(name="queryEntity", required=true, dataType="QueryEntity")
+	@ApiImplicitParam(name="queryBean", required=true, dataType="QueryBean")
 	@RequestMapping(value="/detail/by_period",
 			method=RequestMethod.POST, produces="application/json")
 	@JsonView(JsonVisibilityLevel.NormalView.class)
-	public Map<String,Object> getContentBetweenTime(@NotNull @RequestBody QueryEntity queryEntity)
+	public Map<String,Object> getContentBetweenTime(@NotNull @RequestBody QueryBean queryBean)
 	{
 		//TODO 需要进行结果可用性验证
-
-		Date start=new Date(queryEntity.getStart().getTime());
-		Date end=new Date(queryEntity.getEnd().getTime());
-//		DateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		Map<String,Object> resultMap=new HashMap<>();
+		if(queryBean.getStart()==null||queryBean.getEnd()==null)
+		{
+			resultMap.put("result","failure");
+			return resultMap;
+		}
+		Date start=new Date(queryBean.getStart().getTime());
+		Date end=new Date(queryBean.getEnd().getTime());
+//		DateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
 //		try
 //		{
 //			Date start_date=new Date(format.parse(start).getTime());
@@ -104,16 +110,22 @@ public class ContentApiController
 	}
 
 	@ApiOperation(value="根据user_id查询该用户发表的content", notes="仅需要提供user_id")
-	@ApiImplicitParam(name="queryEntity", required=true, dataType="QueryEntity")
+	@ApiImplicitParam(name="queryBean", required=true, dataType="QueryBean")
 	@RequestMapping(value="/detail/by_user",
 			method=RequestMethod.POST, produces="application/json")
 	@JsonView(JsonVisibilityLevel.NormalView.class)
-	public Map<String,Object> getContentByUser(@NotNull @RequestBody QueryEntity queryEntity)
+	public Map<String,Object> getContentByUser(@NotNull @RequestBody QueryBean queryBean)
 	{
 		//TODO 需要进行结果可用性验证
-		Integer user_id=queryEntity.getUser_id();
-		List<Content> contentList=contentService.retrieveContentByUserId(user_id);
 		Map<String,Object> resultMap=new HashMap<>();
+		if(queryBean.getUser_id()==null)
+		{
+			resultMap.put("result","failure");
+			return resultMap;
+		}
+		Integer user_id=queryBean.getUser_id();
+		List<Content> contentList=contentService.retrieveContentByUserId(user_id);
+
 		resultMap.put("result","success");
 		resultMap.put("entity_list",contentList);
 		return resultMap;
@@ -128,7 +140,8 @@ public class ContentApiController
 	{
 		if(errors.hasErrors())
 		{
-			errors.getAllErrors().stream().forEach(error->logger.error(error.getDefaultMessage()));
+			errors.getAllErrors().stream()
+					.forEach(error->logger.error(error.getDefaultMessage()));
 		}
 
 		//TODO 需要进行结果可用性验证

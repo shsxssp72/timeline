@@ -37,7 +37,7 @@ public class UserInfoServiceImpl implements UserInfoService
 	public List<UserInfo> retrieveUserInfoByDisplayName(@NotNull String displayName)
 	{
 		Map<String,Object> map=new HashMap<>();
-		map.put("displayName",displayName);
+		map.put("display_name",displayName);
 		return userInfoMapper.selectByParams(map);
 	}
 
@@ -49,23 +49,49 @@ public class UserInfoServiceImpl implements UserInfoService
 	}
 
 	@Override
-	public void createNewUserInfo(@NotNull UserInfo userInfo)
+	public boolean createNewUserInfo(@NotNull UserInfo userInfo)
 	{
 		int availableUserId=userInfoMapper.getAvailableUserId();
 		userInfo.setUserId(availableUserId+1);
+
+		if(checkInfoLegal(userInfo))
+			return false;
 		userInfoMapper.insert(userInfo);
+		return true;
 	}
 
 	@Override
-	public void updateUserInfoById(int userId,@NotNull UserInfo newUserInfo)
+	public boolean updateUserInfoById(int userId,@NotNull UserInfo newUserInfo)
 	{
 		newUserInfo.setUserId(userId);
+
+		if(checkInfoLegal(newUserInfo))
+			return false;
 		userInfoMapper.updateByPrimaryKey(newUserInfo);
+		return true;
 	}
 
 	@Override
 	public void deleteUserInfoById(int userId)
 	{
 		userInfoMapper.deleteByPrimaryKey(userId);
+	}
+
+	private boolean checkInfoLegal(@NotNull UserInfo userInfo)
+	{
+		Map<String,Object> map=new HashMap<>();
+		if(userInfo.getUsername()!=null)
+		{
+			map.put("username",userInfo.getUsername());
+			if(!userInfoMapper.selectByParams(map).isEmpty())
+				return true;
+		}
+		if(userInfo.getDisplayName()!=null)
+		{
+			map.put("display_name",userInfo.getDisplayName());
+			if(!userInfoMapper.selectByParams(map).isEmpty())
+				return true;
+		}
+		return false;
 	}
 }

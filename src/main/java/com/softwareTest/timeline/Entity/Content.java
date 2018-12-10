@@ -11,12 +11,12 @@ public class Content
 {
 	private Integer contentId;
 
-	@NotNull(message="userId can not be blank.")
+	@NotNull(message="UserId can not be blank.")
 	private Integer userId;
 
 	private Date publishTime;
 
-	@NotBlank(message="content can not be blank.")
+	@NotBlank(message="Content can not be blank.")
 	private String content;
 
 	public Content(Integer contentId,Integer userId,Date publishTime)

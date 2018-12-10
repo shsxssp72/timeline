@@ -1,7 +1,7 @@
 package com.softwareTest.timeline.Config.SpringSecurity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softwareTest.timeline.Bean.AjaxResponseBody;
+import com.softwareTest.timeline.Bean.ResponseBody;
 import com.softwareTest.timeline.Config.Constants;
 import com.softwareTest.timeline.Utility.CryptoUtility;
 import com.softwareTest.timeline.Utility.JwtTokenUtil;
@@ -27,15 +27,12 @@ public class AjaxAuthenticationSuccessHandler implements AuthenticationSuccessHa
 										Authentication authentication) throws IOException, ServletException
 	{
 
-		AjaxResponseBody responseBody = new AjaxResponseBody();
+		ResponseBody responseBody = new ResponseBody();
 
 		responseBody.setStatus(Constants.LoginSuccessStatus);
 		responseBody.setMsg(Constants.LoginSuccessMessage);
 //		CustomUserDetails userDetails=(CustomUserDetails)(authentication.getPrincipal());
-		logger.info("Username: "+(String)authentication.getPrincipal());
-		logger.info("Password: "+(String)authentication.getCredentials());
 		String jwtToken=JwtTokenUtil.generateToken((String)authentication.getPrincipal(),Constants.TOKEN_EXPIRATION_SECONDS,/*Unused*/Constants.TOKEN_SALT);
-		logger.info("Token: "+jwtToken);
 		String base64edToken=CryptoUtility.Base64Encoder(jwtToken);
 		responseBody.setJwtToken(base64edToken);
 

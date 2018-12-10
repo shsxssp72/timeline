@@ -20,6 +20,3 @@ CREATE TABLE Content (
 
 GRANT ALL PRIVILEGES ON timeline.* TO 'timeline'@'%' IDENTIFIED BY 'commonProject';
 
-SELECT max(content_id)
-FROM (SELECT content_id
-      FROM Content) as A

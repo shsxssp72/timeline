@@ -41,9 +41,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
 			{
 				final String authBase64edToken=authHeader.substring("Bearer ".length());
 				final String authToken=CryptoUtility.Base64Decoder(authBase64edToken);
-				logger.info("Token: "+authToken);
 				String username=JwtTokenUtil.parseToken(authToken,/*Unused*/Constants.TOKEN_SALT);
-				logger.info("Username: "+username);
 
 				if(username!=null&&SecurityContextHolder.getContext().getAuthentication()==null)
 				{

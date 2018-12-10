@@ -8,14 +8,14 @@ import java.util.List;
 
 public interface UserInfoService
 {
-	List<UserInfo> retrieveUserInfoByUserId(int userId);
-	List<UserInfo> retrieveUserInfoByusername(String username);
-	List<UserInfo> retrieveUserInfoByDisplayName(String displayName);
+	List<UserInfo> retrieveUserInfoByUserId(int userId);//即要求全局唯一
+	List<UserInfo> retrieveUserInfoByusername(String username);//即要求全局唯一
+	List<UserInfo> retrieveUserInfoByDisplayName(String displayName);//即要求全局唯一
 	List<UserInfo> retrieveAll();
 
-	void createNewUserInfo(UserInfo userInfo);
+	boolean createNewUserInfo(UserInfo userInfo);
 
-	void updateUserInfoById(int userId,UserInfo newUserInfo);
+	boolean updateUserInfoById(int userId,UserInfo newUserInfo);
 
 	void deleteUserInfoById(int userId);
 }

@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @ApiModel
-public class QueryEntity implements Serializable
+public class QueryBean implements Serializable
 {
 	@ApiModelProperty("用户ID")
 	private Integer user_id;
