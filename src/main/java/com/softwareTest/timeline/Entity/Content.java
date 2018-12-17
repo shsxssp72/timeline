@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class Content
+public class Content implements Comparable<Content>
 {
 	private Integer contentId;
 
@@ -18,6 +18,8 @@ public class Content
 
 	@NotBlank(message="Content can not be blank.")
 	private String content;
+
+	private String displayName;
 
 	public Content(Integer contentId,Integer userId,Date publishTime)
 	{
@@ -32,6 +34,17 @@ public class Content
 		this.userId=userId;
 		this.publishTime=publishTime;
 		this.content=content;
+	}
+
+	public Content(Integer contentId,
+				   @NotNull(message="UserId can not be blank.") Integer userId,Date publishTime,
+				   @NotBlank(message="Content can not be blank.") String content,String displayName)
+	{
+		this.contentId=contentId;
+		this.userId=userId;
+		this.publishTime=publishTime;
+		this.content=content;
+		this.displayName=displayName;
 	}
 
 	public Content()
@@ -61,6 +74,17 @@ public class Content
 		this.userId=userId;
 	}
 
+	@JsonView(JsonVisibilityLevel.NormalView.class)
+	public String getDisplayName()
+	{
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName)
+	{
+		this.displayName=displayName;
+	}
+
 	@JsonView(JsonVisibilityLevel.BasicView.class)
 	public Date getPublishTime()
 	{
@@ -81,5 +105,14 @@ public class Content
 	public void setContent(String content)
 	{
 		this.content=content==null?null:content.trim();
+	}
+
+	@Override
+	public int compareTo(Content another)
+	{
+		if(this.publishTime.getTime()<=another.getPublishTime().getTime())
+			return 1;
+		else
+			return -1;
 	}
 }

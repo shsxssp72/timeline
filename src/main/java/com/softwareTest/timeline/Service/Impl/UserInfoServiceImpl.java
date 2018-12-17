@@ -1,8 +1,11 @@
 package com.softwareTest.timeline.Service.Impl;
 
+import com.softwareTest.timeline.Config.SpringSecurity.JsonCustomAuthenticationFilter;
 import com.softwareTest.timeline.Entity.UserInfo;
 import com.softwareTest.timeline.Mapper.UserInfoMapper;
 import com.softwareTest.timeline.Service.UserInfoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,9 @@ import java.util.Map;
 @Service
 public class UserInfoServiceImpl implements UserInfoService
 {
+	private final static Logger logger=LoggerFactory.getLogger(UserInfoServiceImpl.class);
+
+
 	@Autowired
 	UserInfoMapper userInfoMapper;
 
@@ -26,7 +32,7 @@ public class UserInfoServiceImpl implements UserInfoService
 	}
 
 	@Override
-	public List<UserInfo> retrieveUserInfoByusername(@NotNull String username)
+	public List<UserInfo> retrieveUserInfoByUsername(@NotNull String username)
 	{
 		Map<String,Object> map=new HashMap<>();
 		map.put("username",username);

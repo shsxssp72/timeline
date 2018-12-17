@@ -15,6 +15,8 @@ public class QueryBean implements Serializable
 	private Date start;
 	@ApiModelProperty("终止时间")
 	private Date end;
+	private Integer contentStartId;
+	private Integer numberToRetrieve;
 
 
 	public Integer getUser_id()
@@ -45,5 +47,25 @@ public class QueryBean implements Serializable
 	public void setEnd(Date end)
 	{
 		this.end=end;
+	}
+
+	public Integer getContentStartId()
+	{
+		return contentStartId;
+	}
+
+	public void setContentStartId(Integer contentStartId)
+	{
+		this.contentStartId=contentStartId;
+	}
+
+	public Integer getNumberToRetrieve()
+	{
+		return numberToRetrieve;
+	}
+
+	public void setNumberToRetrieve(Integer numberToRetrieve)
+	{
+		this.numberToRetrieve=numberToRetrieve;
 	}
 }

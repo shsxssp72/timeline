@@ -19,4 +19,3 @@ CREATE TABLE Content (
 );
 
 GRANT ALL PRIVILEGES ON timeline.* TO 'timeline'@'%' IDENTIFIED BY 'commonProject';
-

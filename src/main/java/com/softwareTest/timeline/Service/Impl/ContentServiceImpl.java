@@ -55,6 +55,12 @@ public class ContentServiceImpl implements ContentService
 	}
 
 	@Override
+	public List<Content> retrieveContentByIdRange(int startId,int endId)
+	{
+		return contentMapper.selectByIdRange(startId,endId);
+	}
+
+	@Override
 	public List<Content> retrieveAll()
 	{
 		Map<String,Object> map=new HashMap<>();

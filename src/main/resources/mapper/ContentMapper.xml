@@ -134,4 +134,11 @@
 		FROM Content
 		WHERE publish_time <![CDATA[ >= ]]> #{start,jdbcType=TIMESTAMP} AND publish_time <![CDATA[ <= ]]> #{end,jdbcType=TIMESTAMP}
 	</select>
+	<select id="selectByIdRange" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+		SELECT *
+		FROM Content
+		WHERE content_id <![CDATA[ >= ]]> #{startId,jdbcType=INTEGER} AND content_id <![CDATA[ <= ]]> #{endId,jdbcType=INTEGER}
+	</select>
+
+
 </mapper>

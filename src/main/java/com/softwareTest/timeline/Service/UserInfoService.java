@@ -2,14 +2,17 @@ package com.softwareTest.timeline.Service;
 
 
 import com.softwareTest.timeline.Entity.UserInfo;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
 
+//@Service
 public interface UserInfoService
 {
 	List<UserInfo> retrieveUserInfoByUserId(int userId);//即要求全局唯一
-	List<UserInfo> retrieveUserInfoByusername(String username);//即要求全局唯一
+	List<UserInfo> retrieveUserInfoByUsername(String username);//即要求全局唯一
 	List<UserInfo> retrieveUserInfoByDisplayName(String displayName);//即要求全局唯一
 	List<UserInfo> retrieveAll();
 

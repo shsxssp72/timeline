@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService
 		CustomUserDetails userDetails=new CustomUserDetails();
 		userDetails.setUsername(username);
 
-		List<UserInfo> matchUsers=userInfoService.retrieveUserInfoByusername(username);
+		List<UserInfo> matchUsers=userInfoService.retrieveUserInfoByUsername(username);
 		String password;
 		if(matchUsers.isEmpty())
 			password="";

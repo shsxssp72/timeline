@@ -3,6 +3,7 @@ package com.softwareTest.timeline.Controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.softwareTest.timeline.Bean.QueryBean;
 import com.softwareTest.timeline.Entity.Content;
+import com.softwareTest.timeline.Mapper.UserInfoMapper;
 import com.softwareTest.timeline.Service.ContentService;
 import com.softwareTest.timeline.Utility.JsonVisibilityLevel;
 import io.swagger.annotations.ApiImplicitParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,9 @@ public class ContentApiController
 {
 	@Autowired
 	ContentService contentService;
+
+	@Autowired
+	UserInfoMapper userInfoMapper;
 
 	private static Logger logger=LoggerFactory.getLogger(ContentApiController.class);
 
@@ -75,6 +80,7 @@ public class ContentApiController
 		return resultMap;
 	}
 
+
 	@ApiOperation(value="在两个时间点之间的范围内查询content", notes="仅需要提供start和end")
 	@ApiImplicitParam(name="queryBean", required=true, dataType="QueryBean")
 	@RequestMapping(value="/detail/by_period",
@@ -91,23 +97,50 @@ public class ContentApiController
 		}
 		Date start=new Date(queryBean.getStart().getTime());
 		Date end=new Date(queryBean.getEnd().getTime());
-//		DateFormat format=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-
-//		try
-//		{
-//			Date start_date=new Date(format.parse(start).getTime());
-//			Date end_date=new Date(format.parse(end).getTime());
 		List<Content> contentList=contentService.retrieveContentBetweenTime(start,end);
+
+		return getOrderedContentResultList(resultMap,contentList);
+	}
+
+	@ApiOperation(value="在contentId和numberToRetrieve决定的的范围内查询content", notes="仅需要提供contentStartId和numberToRetrieve")
+	@ApiImplicitParam(name="queryBean", required=true, dataType="QueryBean")
+	@RequestMapping(value="/detail/by_id_range",
+			method=RequestMethod.POST, produces="application/json")
+	@JsonView(JsonVisibilityLevel.NormalView.class)
+	public Map<String,Object> getContentByIdRange(@NotNull @RequestBody QueryBean queryBean)
+	{
+		//TODO 需要进行结果可用性验证
+		Map<String,Object> resultMap=new HashMap<>();
+		if(queryBean.getContentStartId()==null||queryBean.getNumberToRetrieve()==null)
+		{
+			resultMap.put("result","failure");
+			return resultMap;
+		}
+
+		//此处语义有不同
+		int endId=queryBean.getContentStartId()-1;
+		int startId=queryBean.getContentStartId()
+				-queryBean.getNumberToRetrieve() >= 0?
+				queryBean.getContentStartId()-queryBean.getNumberToRetrieve():0;
+
+		List<Content> contentList=contentService.retrieveContentByIdRange(startId,endId);
+
+		return getOrderedContentResultList(resultMap,contentList);
+	}
+
+	private Map<String,Object> getOrderedContentResultList(Map<String,Object> resultMap,List<Content> contentList)
+	{
+		contentList.forEach(item->
+				item.setDisplayName(userInfoMapper.selectByPrimaryKey(item.getUserId()).getDisplayName())
+		);
+
+		contentList.sort(Comparator.naturalOrder());
+
 		resultMap.put("result","success");
 		resultMap.put("entity_list",contentList);
-//		}
-//		catch(Exception e)
-//		{
-//			e.printStackTrace();
-//			resultMap.put("result","failed");
-//		}
 		return resultMap;
 	}
+
 
 	@ApiOperation(value="根据user_id查询该用户发表的content", notes="仅需要提供user_id")
 	@ApiImplicitParam(name="queryBean", required=true, dataType="QueryBean")

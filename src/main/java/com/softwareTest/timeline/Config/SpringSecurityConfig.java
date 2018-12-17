@@ -42,6 +42,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 	@Autowired
 	JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
+	@Autowired
+	CorsFilter corsFilter;
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception
 	{
@@ -78,7 +81,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 				.permitAll();
 		http.antMatcher("/**")
 				.authorizeRequests();
-		http.cors();
+//		http.cors();
 
 
 		http.rememberMe().rememberMeParameter("remember-me")
@@ -87,6 +90,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
 		http.addFilterBefore(jwtAuthenticationTokenFilter,UsernamePasswordAuthenticationFilter.class); // JWT Filter
 		http.addFilterAt(customAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(corsFilter,ChannelProcessingFilter.class);
+
 	}
 
 //	@Override

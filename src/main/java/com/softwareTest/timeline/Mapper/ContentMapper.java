@@ -30,4 +30,6 @@ public interface ContentMapper {
     int getAvailableContentId();
 
     List<Content> selectByTimeRange(Date start,Date end);
+
+    List<Content> selectByIdRange(Integer startId,Integer endId);
 }
