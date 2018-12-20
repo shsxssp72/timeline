@@ -4,7 +4,7 @@ import com.softwareTest.timeline.Entity.Content;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -12,9 +12,9 @@ public interface ContentService
 {
 	List<Content> retrieveContentByContentId(int contentId);
 	List<Content> retrieveContentByUserId(int userId);
-	List<Content> retrieveContentByTime(Date date);
-	List<Content> retrieveContentAfterTime(Date date);
-	List<Content> retrieveContentBetweenTime(Date start,Date end);
+	List<Content> retrieveContentByTime(Timestamp date);
+	List<Content> retrieveContentAfterTime(Timestamp date);
+	List<Content> retrieveContentBetweenTime(Timestamp start,Timestamp end);
 	List<Content> retrieveContentByIdRange(int startId,int endId);
 	List<Content> retrieveAll();
 

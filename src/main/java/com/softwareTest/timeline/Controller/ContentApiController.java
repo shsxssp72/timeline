@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -95,10 +96,10 @@ public class ContentApiController
 			resultMap.put("result","failure");
 			return resultMap;
 		}
-		Date start=new Date(queryBean.getStart().getTime());
-		Date end=new Date(queryBean.getEnd().getTime());
-		List<Content> contentList=contentService.retrieveContentBetweenTime(start,end);
 
+		Timestamp start=new Timestamp(queryBean.getStart().getTime());
+		Timestamp end=new Timestamp(queryBean.getEnd().getTime());
+		List<Content> contentList=contentService.retrieveContentBetweenTime(start,end);
 		return getOrderedContentResultList(resultMap,contentList);
 	}
 

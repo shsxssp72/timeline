@@ -17,7 +17,8 @@
 		</constructor>
 	</resultMap>
 	<sql id="Base_Column_List">
-		content_id,
+		content_id
+		,
 		user_id,
 		publish_time
 	</sql>
@@ -125,11 +126,11 @@
 		WHERE content_id = #{contentId,jdbcType=INTEGER}
 	</update>
 	<select id="getAvailableContentId" resultType="java.lang.Integer">
-		SELECT max(content_id)
-		FROM (SELECT content_id
-			  FROM Content) AS A
+		select ifnull((SELECT max(content_id)
+					   FROM (SELECT content_id
+							 FROM Content) AS A), 0)
 	</select>
-	<select id="selectByTimeRange" resultMap="ResultMapWithBLOBs" parameterType="java.sql.Date">
+	<select id="selectByTimeRange" resultMap="ResultMapWithBLOBs" parameterType="java.sql.Timestamp">
 		SELECT *
 		FROM Content
 		WHERE publish_time <![CDATA[ >= ]]> #{start,jdbcType=TIMESTAMP} AND publish_time <![CDATA[ <= ]]> #{end,jdbcType=TIMESTAMP}

@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class ContentApiControllerTest
 
 		List<Content> contentList=mapper.readValue(entityListString,new TypeReference<List<Content>>(){});
 		List<Content> realList=contentService
-				.retrieveContentBetweenTime(new Date(bean.getStart().getTime()),new Date(bean.getEnd().getTime()));
+				.retrieveContentBetweenTime(new Timestamp(bean.getStart().getTime()),new Timestamp(bean.getEnd().getTime()));
 
 		assertEquals(contentList.size(),realList.size());
 		for(int i=0;i<contentList.size();i++)

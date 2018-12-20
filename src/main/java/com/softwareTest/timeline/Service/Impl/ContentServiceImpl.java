@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,21 +36,21 @@ public class ContentServiceImpl implements ContentService
 	}
 
 	@Override
-	public List<Content> retrieveContentByTime(@NotNull Date date)
+	public List<Content> retrieveContentByTime(@NotNull Timestamp timestamp)
 	{
 		Map<String,Object> map=new HashMap<>();
-		map.put("publish_time",date);
+		map.put("publish_time",timestamp);
 		return contentMapper.selectByParams(map);
 	}
 
 	@Override
-	public List<Content> retrieveContentAfterTime(@NotNull Date date)
+	public List<Content> retrieveContentAfterTime(@NotNull Timestamp timestamp)
 	{
-		return contentMapper.selectByTimeRange(date,new Date(new java.util.Date().getTime()));
+		return contentMapper.selectByTimeRange(timestamp,new Timestamp(new java.util.Date().getTime()));
 	}
 
 	@Override
-	public List<Content> retrieveContentBetweenTime(@NotNull Date start,@NotNull Date end)
+	public List<Content> retrieveContentBetweenTime(@NotNull Timestamp start,@NotNull Timestamp end)
 	{
 		return contentMapper.selectByTimeRange(start,end);
 	}
@@ -72,7 +73,7 @@ public class ContentServiceImpl implements ContentService
 	{
 		int availableContentId=contentMapper.getAvailableContentId();
 		content.setContentId(availableContentId+1);
-		content.setPublishTime(new Date(new java.util.Date().getTime()));
+//		content.setPublishTime(new Date(new java.util.Date().getTime()));
 		contentMapper.insert(content);
 	}
 

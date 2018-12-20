@@ -14,6 +14,7 @@ public class Content implements Comparable<Content>
 	@NotNull(message="UserId can not be blank.")
 	private Integer userId;
 
+	@NotNull
 	private Date publishTime;
 
 	@NotBlank(message="Content can not be blank.")

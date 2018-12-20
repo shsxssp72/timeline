@@ -4,7 +4,7 @@ import com.softwareTest.timeline.Entity.Content;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +29,7 @@ public interface ContentMapper {
 
     int getAvailableContentId();
 
-    List<Content> selectByTimeRange(Date start,Date end);
+    List<Content> selectByTimeRange(Timestamp start,Timestamp end);
 
     List<Content> selectByIdRange(Integer startId,Integer endId);
 }
