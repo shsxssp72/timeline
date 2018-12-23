@@ -35,9 +35,8 @@ public class RegisterController
 
 		UserInfo info=new UserInfo();
 		info.setUsername(registerBean.getUsername());
-		info.setDisplayName(registerBean.getDisplayName()==null?
-				registerBean.getUsername():
-				registerBean.getDisplayName());
+		info.setDisplayName(registerBean.getDisplayName()==null?registerBean.getUsername():registerBean
+				.getDisplayName());
 		info.setUserPassword(registerBean.getPassword());
 		boolean result=userInfoService.createNewUserInfo(info);
 		Map<String,Object> resultMap=new HashMap<>();
