@@ -35,5 +35,10 @@ public class Constants
 	//Content
 	public final static int MAX_CONTENT_SIZE=1000;
 
+	//User
+	public final static int MAX_USERNAME_LENGTH=15;
+	public final static int MAX_DISPLAYNAME_LENGTH=MAX_USERNAME_LENGTH;
+	public final static int MAX_PASSWORD_LENGTH=255;
+
 
 }
