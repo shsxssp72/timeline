@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.softwareTest.timeline.Config.Constants.MAX_CONTENT_SIZE;
+
 @RestController
 @RequestMapping("/api/content")
 public class ContentApiController
@@ -52,8 +54,15 @@ public class ContentApiController
 			errors.getAllErrors().stream()
 					.forEach(error->logger.error(error.getDefaultMessage()));
 		}
-		contentService.createNewContent(content);
+
 		Map<String,Object> resultMap=new HashMap<>();
+		if(content.getContent().length()>MAX_CONTENT_SIZE)
+		{
+			resultMap.put("result","failure");
+			return resultMap;
+		}
+
+		contentService.createNewContent(content);
 		resultMap.put("result","success");
 		resultMap.put("content_id",content.getContentId());
 		resultMap.put("publish_time",content.getPublishTime());

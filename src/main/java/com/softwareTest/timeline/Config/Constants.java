@@ -32,5 +32,8 @@ public class Constants
 	//Security
 	public final static Set<String> IGNORE_PATH=Set.of("/login","/regKey");
 
+	//Content
+	public final static int MAX_CONTENT_SIZE=1500;
+
 
 }
