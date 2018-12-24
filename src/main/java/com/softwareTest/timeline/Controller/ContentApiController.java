@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import org.json.JSONObject;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
@@ -56,7 +58,11 @@ public class ContentApiController
 		}
 
 		Map<String,Object> resultMap=new HashMap<>();
-		if(content.getContent().length()>MAX_CONTENT_SIZE)
+
+		JSONObject jsonObject= new JSONObject(content.getContent());
+		String realContent=jsonObject.getString("data");
+
+		if(realContent.length()>MAX_CONTENT_SIZE)
 		{
 			resultMap.put("result","failure");
 			return resultMap;
