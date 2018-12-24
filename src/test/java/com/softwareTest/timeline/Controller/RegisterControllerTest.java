@@ -54,13 +54,43 @@ public class RegisterControllerTest
 		bean.setUsername("TestUsername");
 		bean.setPassword("TestPassword");
 
+		when(bindingResult.hasErrors()).thenReturn(false);
+//		when(bindingResult.getAllErrors()).thenReturn(Arrays.asList(new ObjectError("Test","TestMessage")));
+
+		Map<String,Object> result=registerController.registerNewAccount(bean,bindingResult);
+		assertEquals(result.get("result"),"success");
+	}
+
+	@Test
+	public void test_registerNewAccount_usernameExceed()
+	{
+		RegisterBean bean=new RegisterBean();
+		bean.setDisplayName("TestDisplayName1");
+		bean.setUsername("TestUsername");
+		bean.setPassword("TestPassword");
+
 		when(bindingResult.hasErrors()).thenReturn(true);
 		when(bindingResult.getAllErrors()).thenReturn(Arrays.asList(new ObjectError("Test","TestMessage")));
 
 		Map<String,Object> result=registerController.registerNewAccount(bean,bindingResult);
-		assertEquals(result.get("result"),"success");
-
+		assertEquals(result.get("result"),"failure");
 	}
+
+	@Test
+	public void test_registerNewAccount_displayNameExceed()
+	{
+		RegisterBean bean=new RegisterBean();
+		bean.setDisplayName("TestDisplayName");
+		bean.setUsername("TestUsername1111111111111111");
+		bean.setPassword("TestPassword");
+
+		when(bindingResult.hasErrors()).thenReturn(true);
+		when(bindingResult.getAllErrors()).thenReturn(Arrays.asList(new ObjectError("Test","TestMessage")));
+
+		Map<String,Object> result=registerController.registerNewAccount(bean,bindingResult);
+		assertEquals(result.get("result"),"failure");
+	}
+
 
 	@After
 	public void restoreAccount()

@@ -108,7 +108,7 @@ public class ContentApiControllerTest
 		DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		content.setPublishTime(format.parse("2018-01-01 23:48:12"));
-		content.setContent("Test");
+		content.setContent("{\"data\":\"Test\"}");
 		content.setUserId(1);
 
 		when(bindingResult.hasErrors()).thenReturn(true);
@@ -124,6 +124,34 @@ public class ContentApiControllerTest
 		assertEquals(result.get("result"),"success");
 		assertEquals(contentService.retrieveContentByContentId(content_id).size(),0);
 	}
+
+	@Test
+	public void test_createContent_contentExceed() throws Exception
+	{
+		Content content=new Content();
+		DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		StringBuilder stringBuilder=new StringBuilder();
+		stringBuilder.append("{\"data\":\"");
+		for(int i=0;i<1001;i++)
+		{
+			stringBuilder.append("q");
+		}
+		stringBuilder.append("\"}");
+
+		content.setPublishTime(format.parse("2018-01-01 23:48:12"));
+		content.setContent(stringBuilder.toString());
+		content.setUserId(1);
+
+
+		when(bindingResult.hasErrors()).thenReturn(true);
+		when(bindingResult.getAllErrors()).thenReturn(Arrays.asList(new ObjectError("Test","TestMessage")));
+
+		Map<String,Object> result=controller.createContent(content,bindingResult);
+
+		assertEquals(result.get("result"),"failure");
+	}
+
 
 	@Test
 	public void test_getDetailedContentById_success() throws Exception
