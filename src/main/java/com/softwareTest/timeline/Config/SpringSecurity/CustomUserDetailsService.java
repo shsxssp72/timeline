@@ -25,10 +25,9 @@ public class CustomUserDetailsService implements UserDetailsService
 	{
 		CustomUserDetails userDetails=new CustomUserDetails();
 		userDetails.setUsername(username);
-
 		List<UserInfo> matchUsers=userInfoService.retrieveUserInfoByUsername(username);
 		String password;
-		if(matchUsers.isEmpty())
+		if(matchUsers==null||matchUsers.isEmpty())
 			password="";
 		else
 			password=matchUsers.get(0).getUserPassword();//此处应该只有一个元素

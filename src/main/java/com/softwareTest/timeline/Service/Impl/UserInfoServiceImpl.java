@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserInfoServiceImpl implements UserInfoService
@@ -32,16 +32,20 @@ public class UserInfoServiceImpl implements UserInfoService
 	}
 
 	@Override
-	public List<UserInfo> retrieveUserInfoByUsername(@NotNull String username)
+	public List<UserInfo> retrieveUserInfoByUsername(@NotBlank String username)
 	{
+		if(username.isBlank())
+			return null;
 		Map<String,Object> map=new HashMap<>();
 		map.put("username",username);
 		return userInfoMapper.selectByParams(map);
 	}
 
 	@Override
-	public List<UserInfo> retrieveUserInfoByDisplayName(@NotNull String displayName)
+	public List<UserInfo> retrieveUserInfoByDisplayName(@NotBlank String displayName)
 	{
+		if(displayName.isBlank())
+			return null;
 		Map<String,Object> map=new HashMap<>();
 		map.put("display_name",displayName);
 		return userInfoMapper.selectByParams(map);
