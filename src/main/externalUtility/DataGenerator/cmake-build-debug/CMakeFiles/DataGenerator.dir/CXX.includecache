@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/Projects/IDEAProjects/timeline/src/main/externalUtility/DataGenerator/NameData.h
+
+D:/Projects/IDEAProjects/timeline/src/main/externalUtility/DataGenerator/SpecializedForTimeline.h
+iostream
+-
+vector
+-
+ctime
+-
+random
+-
+fstream
+-
+sstream
+-
+map
+-
+algorithm
+-
+NameData.h
+D:/Projects/IDEAProjects/timeline/src/main/externalUtility/DataGenerator/NameData.h
+
+D:/Projects/IDEAProjects/timeline/src/main/externalUtility/DataGenerator/main.cpp
+iostream
+-
+algorithm
+-
+SpecializedForTimeline.h
+D:/Projects/IDEAProjects/timeline/src/main/externalUtility/DataGenerator/SpecializedForTimeline.h
+

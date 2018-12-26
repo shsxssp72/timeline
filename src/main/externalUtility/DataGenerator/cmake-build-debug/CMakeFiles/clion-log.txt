@@ -1,0 +1,4 @@
+C:\Jetbrains\apps\CLion\ch-0\183.4284.156\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:/msys64/mingw64/bin/mingw32-make.exe -DCMAKE_C_COMPILER=C:/msys64/mingw64/bin/clang.exe -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/clang++.exe -G "CodeBlocks - MinGW Makefiles" D:\Projects\IDEAProjects\timeline\src\main\externalUtility\DataGenerator
+-- Configuring done
+-- Generating done
+-- Build files have been written to: D:/Projects/IDEAProjects/timeline/src/main/externalUtility/DataGenerator/cmake-build-debug
