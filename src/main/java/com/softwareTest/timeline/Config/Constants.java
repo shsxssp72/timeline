@@ -34,6 +34,7 @@ public class Constants
 
 	//Content
 	public final static int MAX_CONTENT_SIZE=1000;
+	public final static int LATEST_CONTENT_FLAG=-1;
 
 	//User
 	public final static int MAX_USERNAME_LENGTH=15;

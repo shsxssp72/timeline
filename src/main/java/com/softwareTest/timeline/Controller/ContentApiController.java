@@ -3,6 +3,7 @@ package com.softwareTest.timeline.Controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.softwareTest.timeline.Bean.QueryBean;
 import com.softwareTest.timeline.Entity.Content;
+import com.softwareTest.timeline.Mapper.ContentMapper;
 import com.softwareTest.timeline.Mapper.UserInfoMapper;
 import com.softwareTest.timeline.Service.ContentService;
 import com.softwareTest.timeline.Utility.JsonVisibilityLevel;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.softwareTest.timeline.Config.Constants.LATEST_CONTENT_FLAG;
 import static com.softwareTest.timeline.Config.Constants.MAX_CONTENT_SIZE;
 
 @RestController
@@ -33,6 +35,9 @@ public class ContentApiController
 {
 	@Autowired
 	ContentService contentService;
+
+	@Autowired
+	ContentMapper contentMapper;
 
 	@Autowired
 	UserInfoMapper userInfoMapper;
@@ -59,7 +64,7 @@ public class ContentApiController
 
 		Map<String,Object> resultMap=new HashMap<>();
 
-		JSONObject jsonObject= new JSONObject(content.getContent());
+		JSONObject jsonObject=new JSONObject(content.getContent());
 		String realContent=jsonObject.getString("data");
 
 		if(realContent.length()>MAX_CONTENT_SIZE)
@@ -134,10 +139,17 @@ public class ContentApiController
 		}
 
 		//此处语义有不同
+
 		int endId=queryBean.getContentStartId()-1;
-		int startId=queryBean.getContentStartId()
-				-queryBean.getNumberToRetrieve() >= 0?
-				queryBean.getContentStartId()-queryBean.getNumberToRetrieve():0;
+
+		if(queryBean.getContentStartId()==LATEST_CONTENT_FLAG)
+		{
+			endId=contentMapper.getAvailableContentId();
+		}
+		int startId=endId+1
+			-queryBean.getNumberToRetrieve() >= 0?
+			endId+1-queryBean.getNumberToRetrieve():0;
+
 
 		List<Content> contentList=contentService.retrieveContentByIdRange(startId,endId);
 
