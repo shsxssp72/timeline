@@ -71,8 +71,8 @@ public class ContentServiceImpl implements ContentService
 	@Override
 	public void createNewContent(@NotNull Content content)
 	{
-		int availableContentId=contentMapper.getAvailableContentId();
-		content.setContentId(availableContentId+1);
+//		int availableContentId=contentMapper.getAvailableContentId();
+//		content.setContentId(availableContentId+1);
 //		content.setPublishTime(new Date(new java.util.Date().getTime()));
 		contentMapper.insert(content);
 	}

@@ -61,9 +61,9 @@
 		WHERE content_id = #{contentId,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.softwareTest.timeline.Entity.Content">
-		INSERT INTO Content (content_id, user_id, publish_time,
+		INSERT INTO Content ( user_id, publish_time,
 							 content)
-		VALUES (#{contentId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{publishTime,jdbcType=TIMESTAMP},
+		VALUES (#{userId,jdbcType=INTEGER}, #{publishTime,jdbcType=TIMESTAMP},
 				#{content,jdbcType=LONGVARCHAR})
 	</insert>
 	<insert id="insertSelective" parameterType="com.softwareTest.timeline.Entity.Content">
@@ -140,6 +140,9 @@
 		FROM Content
 		WHERE content_id <![CDATA[ >= ]]> #{startId,jdbcType=INTEGER} AND content_id <![CDATA[ <= ]]> #{endId,jdbcType=INTEGER}
 	</select>
+	<update id="resetIdIncrement">
+		ALTER TABLE Content AUTO_INCREMENT =1
+	</update>
 
 
 </mapper>

@@ -60,9 +60,9 @@
 		WHERE user_id = #{userId,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.softwareTest.timeline.Entity.UserInfo">
-		INSERT INTO UserInfo (user_id, username, display_name,
+		INSERT INTO UserInfo (username, display_name,
 							  user_password, salt, last_login)
-		VALUES (#{userId,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{displayName,jdbcType=VARCHAR},
+		VALUES (#{username,jdbcType=VARCHAR}, #{displayName,jdbcType=VARCHAR},
 				#{userPassword,jdbcType=CHAR}, #{salt,jdbcType=CHAR}, #{lastLogin,jdbcType=TIMESTAMP})
 	</insert>
 	<insert id="insertSelective" parameterType="com.softwareTest.timeline.Entity.UserInfo">

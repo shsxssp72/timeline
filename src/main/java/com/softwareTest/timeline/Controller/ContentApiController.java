@@ -69,14 +69,25 @@ public class ContentApiController
 
 		if(realContent.length()>MAX_CONTENT_SIZE)
 		{
+			contentMapper.resetIdIncrement();
 			resultMap.put("result","failure");
 			return resultMap;
 		}
 
-		contentService.createNewContent(content);
-		resultMap.put("result","success");
-		resultMap.put("content_id",content.getContentId());
-		resultMap.put("publish_time",content.getPublishTime());
+		try
+		{
+			contentService.createNewContent(content);
+			resultMap.put("result","success");
+			resultMap.put("content_id",content.getContentId());
+			resultMap.put("publish_time",content.getPublishTime());
+		}
+		catch(Exception e)
+		{
+			contentMapper.resetIdIncrement();
+			resultMap.put("result","failure");
+
+		}
+
 		return resultMap;
 	}
 
@@ -147,8 +158,8 @@ public class ContentApiController
 			endId=contentMapper.getAvailableContentId();
 		}
 		int startId=endId+1
-			-queryBean.getNumberToRetrieve() >= 0?
-			endId+1-queryBean.getNumberToRetrieve():0;
+				-queryBean.getNumberToRetrieve() >= 0?
+				endId+1-queryBean.getNumberToRetrieve():0;
 
 
 		List<Content> contentList=contentService.retrieveContentByIdRange(startId,endId);

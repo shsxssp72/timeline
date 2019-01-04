@@ -32,4 +32,6 @@ public interface ContentMapper {
     List<Content> selectByTimeRange(Timestamp start,Timestamp end);
 
     List<Content> selectByIdRange(Integer startId,Integer endId);
+
+    void resetIdIncrement();
 }

@@ -61,12 +61,19 @@ public class UserInfoServiceImpl implements UserInfoService
 	@Override
 	public boolean createNewUserInfo(@NotNull UserInfo userInfo)
 	{
-		int availableUserId=userInfoMapper.getAvailableUserId();
-		userInfo.setUserId(availableUserId+1);
+//		int availableUserId=userInfoMapper.getAvailableUserId();
+//		userInfo.setUserId(availableUserId+1);
 
-		if(checkInfoLegal(userInfo))
+//		if(checkInfoLegal(userInfo))
+//			return false;
+		try
+		{
+			userInfoMapper.insert(userInfo);
+		}
+		catch(Exception e)
+		{
 			return false;
-		userInfoMapper.insert(userInfo);
+		}
 		return true;
 	}
 
@@ -75,9 +82,14 @@ public class UserInfoServiceImpl implements UserInfoService
 	{
 		newUserInfo.setUserId(userId);
 
-		if(checkInfoLegal(newUserInfo))
+		try
+		{
+			userInfoMapper.updateByPrimaryKey(newUserInfo);
+		}
+		catch(Exception e)
+		{
 			return false;
-		userInfoMapper.updateByPrimaryKey(newUserInfo);
+		}
 		return true;
 	}
 
